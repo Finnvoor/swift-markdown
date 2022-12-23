@@ -39,7 +39,7 @@ class MarkupFormatterSingleElementTests: XCTestCase {
     func testPrintHeadingATX() {
         for level in 1..<6 {
             let expected = String(repeating: "#", count: level) + " H\(level)"
-            let printed = Heading(level: level, Text("H\(level)")).format()
+            let printed = Heading(level: level, setext: false, Text("H\(level)")).format()
             XCTAssertEqual(expected, printed)
         }
     }
@@ -47,7 +47,7 @@ class MarkupFormatterSingleElementTests: XCTestCase {
     func testPrintHeadingSetext() {
         let options = MarkupFormatter.Options(preferredHeadingStyle: .setext)
         do { // H1
-            let printed = Heading(level: 1, Text("Level-1 Heading"))
+            let printed = Heading(level: 1, setext: true, Text("Level-1 Heading"))
                 .format(options: options) 
             let expected = """
             Level-1 Heading
@@ -57,7 +57,7 @@ class MarkupFormatterSingleElementTests: XCTestCase {
         }
 
         do { // H2
-            let printed = Heading(level: 2, Text("Level-2 Heading"))
+            let printed = Heading(level: 2, setext: true, Text("Level-2 Heading"))
                 .format(options: options)
             let expected = """
             Level-2 Heading
@@ -69,13 +69,14 @@ class MarkupFormatterSingleElementTests: XCTestCase {
         do { // H3 - there is no Setext H3 and above; fall back to ATX
             for level in 3...6 {
                 let expected = String(repeating: "#", count: level) + " H\(level)"
-                let printed = Heading(level: level, Text("H\(level)")).format()
+                let printed = Heading(level: level, setext: true, Text("H\(level)")).format()
                 XCTAssertEqual(expected, printed)
             }
         }
 
         do { // Check last line length works with soft breaks
             let printed = Heading(level: 1,
+                                  setext: true,
                                   Text("First line"),
                                   SoftBreak(),
                                   Text("Second line"))

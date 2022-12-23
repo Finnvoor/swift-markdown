@@ -31,14 +31,14 @@ public extension Heading {
     // MARK: Primitive
 
     /// Create a heading with a level and a sequence of children.
-    init<Children: Sequence>(level: Int, _ children: Children) where Children.Element == InlineMarkup {
-        try! self.init(.heading(level: level, parsedRange: nil, children.map { $0.raw.markup }))
+    init<Children: Sequence>(level: Int, setext: Bool, _ children: Children) where Children.Element == InlineMarkup {
+        try! self.init(.heading(level: level, setext: setext, parsedRange: nil, children.map { $0.raw.markup }))
     }
 
     /// The level of the heading, starting at `1`.
     var level: Int {
         get {
-            guard case let .heading(level) = _data.raw.markup.data else {
+            guard case let .heading(level, _) = _data.raw.markup.data else {
                 fatalError("\(self) markup wrapped unexpected \(_data.raw)")
             }
             return level
@@ -48,15 +48,30 @@ public extension Heading {
             guard level != newValue else {
                 return
             }
-            _data = _data.replacingSelf(.heading(level: newValue, parsedRange: nil, _data.raw.markup.copyChildren()))
+            _data = _data.replacingSelf(.heading(level: newValue, setext: setext, parsedRange: nil, _data.raw.markup.copyChildren()))
+        }
+    }
+    
+    var setext: Bool {
+        get {
+            guard case let .heading(_, setext) = _data.raw.markup.data else {
+                fatalError("\(self) markup wrapped unexpected \(_data.raw)")
+            }
+            return setext
+        }
+        set {
+            guard setext != newValue else {
+                return
+            }
+            _data = _data.replacingSelf(.heading(level: level, setext: newValue, parsedRange: nil, _data.raw.markup.copyChildren()))
         }
     }
 
     // MARK: Secondary
 
     /// Create a heading with a level and a sequence of children.
-    init(level: Int, _ children: InlineMarkup...) {
-        self.init(level: level, children)
+    init(level: Int, setext: Bool, _ children: InlineMarkup...) {
+        self.init(level: level, setext: setext, children)
     }
 
     // MARK: Visitation

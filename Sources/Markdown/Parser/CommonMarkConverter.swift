@@ -362,10 +362,11 @@ struct MarkupParser {
         precondition(state.nodeType == .heading)
         let parsedRange = state.range(state.node)
         let headingLevel = Int(cmark_node_get_heading_level(state.node))
+        let setext = state.node!.pointee.as.heading.setext
         let childConversion = convertChildren(state)
         precondition(childConversion.state.node == state.node)
         precondition(childConversion.state.event == CMARK_EVENT_EXIT)
-        return MarkupConversion(state: childConversion.state.next(), result: .heading(level: headingLevel, parsedRange: parsedRange, childConversion.result))
+        return MarkupConversion(state: childConversion.state.next(), result: .heading(level: headingLevel, setext: setext, parsedRange: parsedRange, childConversion.result))
     }
 
     private static func convertThematicBreak(_ state: MarkupConverterState) -> MarkupConversion<RawMarkup> {

@@ -28,7 +28,7 @@ final class RawMarkupToMarkupTests: XCTestCase {
     }
 
     func testHeading() {
-        XCTAssertNoThrow(try Heading(.heading(level: 1, parsedRange: nil, [])))
+        XCTAssertNoThrow(try Heading(.heading(level: 1, setext: false, parsedRange: nil, [])))
         XCTAssertThrowsError(try Heading(.softBreak(parsedRange: nil)))
     }
 

@@ -20,7 +20,7 @@ enum RawMarkupData: Equatable {
     case codeBlock(String, language: String?)
     case customBlock
     case document
-    case heading(level: Int)
+    case heading(level: Int, setext: Bool)
     case thematicBreak
     case htmlBlock(String)
     case listItem(checkbox: Checkbox?)
@@ -213,8 +213,8 @@ final class RawMarkup: ManagedBuffer<RawMarkupHeader, RawMarkup> {
         return .create(data: .document, parsedRange: parsedRange, children: children)
     }
 
-    static func heading(level: Int, parsedRange: SourceRange?, _ children: [RawMarkup]) -> RawMarkup {
-        return .create(data: .heading(level: level), parsedRange: parsedRange, children: children)
+    static func heading(level: Int, setext: Bool, parsedRange: SourceRange?, _ children: [RawMarkup]) -> RawMarkup {
+        return .create(data: .heading(level: level, setext: setext), parsedRange: parsedRange, children: children)
     }
 
     static func thematicBreak(parsedRange: SourceRange?) -> RawMarkup {

@@ -13,7 +13,7 @@ import XCTest
 
 class HeadingTests: XCTestCase {
     func testLevel() {
-        let heading = Heading(level: 1, [Text("Some text")])
+        let heading = Heading(level: 1, setext: false, [Text("Some text")])
         XCTAssertEqual(1, heading.level)
 
         var newHeading = heading
